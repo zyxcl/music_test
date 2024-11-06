@@ -1,41 +1,39 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+import { getBannerApi } from '../../services/index'
+import type { BannerItem } from '../../services/type'
+
+const title = ref('标题11111')
+const banners = ref<BannerItem[]>([])
+
+const getBanner = async () => {
+  try {
+    const res = await getBannerApi()
+    banners.value = res.data.banners
+  } catch(e) {
+    console.log(e)
+  }
+}
+
+getBanner()
+</script>
+
 <template>
   <view class="content">
-    <image class="logo" src="/static/logo.png" />
-    <view class="text-area">
-      <text class="title">{{ title }}</text>
-    </view>
+    <view class="title">{{ title }}</view>
+    <swiper>
+      <swiper-item v-for="item in banners" :key="item.targetId">
+        <image mode="widthFix" :src="item.imageUrl" />
+      </swiper-item>
+    </swiper>
   </view>
 </template>
 
-<script setup lang="ts">
-import { ref } from 'vue'
-const title = ref('Hello')
-</script>
 
-<style>
+<style lang="scss" scoped>
 .content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.logo {
-  height: 200rpx;
-  width: 200rpx;
-  margin-top: 200rpx;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 50rpx;
-}
-
-.text-area {
-  display: flex;
-  justify-content: center;
-}
-
-.title {
-  font-size: 36rpx;
-  color: #8f8f94;
+  .title {
+    color: red;
+  }
 }
 </style>
