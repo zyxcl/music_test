@@ -1,39 +1,44 @@
-<script setup lang="ts">
+
+<script lang="ts" setup>
 import { ref } from 'vue'
-import { getBannerApi } from '../../services/index'
-import type { BannerItem } from '../../services/type'
+import { bannerApi, topPlaylistApi, dragonBalltApi, homepageApi } from '@/api'
+import { useUserStore } from '@/store/user'
+import Header from './components/Header'
+import Banner from './components/Banner'
+import Ball from './components/Ball'
+import Playlist from './components/Playlist'
+import Songs from './components/Songs'
 
-const title = ref('标题11111')
-const banners = ref<BannerItem[]>([])
+// 引入store
+const userStore = useUserStore()
+// 首页内容
+const blocks = ref([])
 
-const getBanner = async () => {
-  try {
-    const res = await getBannerApi()
-    banners.value = res.data.banners
-  } catch(e) {
-    console.log(e)
-  }
-}
-
-getBanner()
+homepageApi().then(res => {
+  console.log(res.data.blocks)
+  blocks.value = res.data.blocks
+})
+	
 </script>
-
 <template>
-  <view class="content">
-    <view class="title">{{ title }}</view>
-    <swiper>
-      <swiper-item v-for="item in banners" :key="item.targetId">
-        <image mode="widthFix" :src="item.imageUrl" />
-      </swiper-item>
-    </swiper>
-  </view>
+  <playerBar>
+    <Header />
+    <view class="block" v-for="block in blocks" :key="block.blockCode">
+      <!-- 轮播 -->
+      <Banner v-if="block.showType === 'BANNER'" :banners="block.extInfo.banners" />
+      <!-- icon图标 -->
+      <Ball v-else-if="block.showType === 'DRAGON_BALL'" />
+      <!-- 歌单 -->
+      <Playlist v-else-if="block.showType === 'HOMEPAGE_SLIDE_PLAYLIST'" :title="block.uiElement.subTitle.title" :list="block.creatives" />
+      <!-- 歌曲 -->
+      <Songs v-else-if="block.showType === 'HOMEPAGE_SLIDE_SONGLIST_ALIGN'" :title="block.uiElement.subTitle.title" :list="block.creatives" :ids="block.resourceIdList" />
+    </view>
+  </playerBar>
+
 </template>
 
 
 <style lang="scss" scoped>
-.content {
-  .title {
-    color: red;
-  }
-}
+
+
 </style>

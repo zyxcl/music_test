@@ -1,13 +1,31 @@
-<script setup lang="ts">
-import { onLaunch, onShow, onHide } from "@dcloudio/uni-app";
+<script lang="ts" setup>
+import { onLaunch } from '@dcloudio/uni-app'
+import { useUserStore } from './store/user'
+
+const userStore = useUserStore()
+
+
 onLaunch(() => {
-  console.log("App Launch");
-});
-onShow(() => {
-  console.log("App Show");
-});
-onHide(() => {
-  console.log("App Hide");
-});
+  // 获取账号信息
+  userStore.getAccount()
+})
 </script>
-<style></style>
+
+<style lang="scss">
+	/*每个页面公共css */
+	// @import '@/uni_modules/uni-scss/index.scss';
+  // @import './uni.scss';
+	page, uni-page-body {
+		background-color: #ffffff;
+    min-height: 100%;
+	}
+  .uni-section .uni-section-header__decoration {
+    background-color: $primary-color !important;
+  }
+  image {
+    background-color: #f4f4f4;
+  }
+  image.nobg {
+    background-color: transparent;
+  }
+</style>
